@@ -26,9 +26,14 @@ public class FluentToscaDocumentModelAPI
 {
 }
 
-
+/*
 interface  End {
     void end();
+}
+*/
+
+interface End<T> {
+    T end();
 }
 
 interface Document extends End {
@@ -65,12 +70,11 @@ interface DataType extends DataTypes {
 //  DataTypePropertyDefinitions properties ();
 }
 
-interface Metadata<T>  {
+interface Metadata<T> extends End<T> {
     Metadata<T> field(String name, String value);
-    T end();
 }
 
-interface Constraints<T>  {
+interface Constraints<T> extends End<T> {
     Constraints<T> equal( String val);
     Constraints<T> greaterThan( String val);
     Constraints<T> greaterOrEqualThan( String val);
@@ -82,7 +86,6 @@ interface Constraints<T>  {
     Constraints<T> minLength( int len);
     Constraints<T> maxLength( int len);
     Constraints<T> pattern( String pattern);
-    T end();
 }
 
 interface NodeType extends NodeTypes {
