@@ -61,12 +61,27 @@ interface DataType extends DataTypes {
     DataType version (String baseType);
     Metadata<DataType> metadata ();
     DataType description (String description);
-//  DataTypeConstraints constraints ();
+    Constraints<DataType> constraints ();
 //  DataTypePropertyDefinitions properties ();
 }
 
 interface Metadata<T>  {
     Metadata<T> field(String name, String value);
+    T end();
+}
+
+interface Constraints<T>  {
+    Constraints<T> equal( String val);
+    Constraints<T> greaterThan( String val);
+    Constraints<T> greaterOrEqualThan( String val);
+    Constraints<T> lessThan( String val);
+    Constraints<T> lessOrEqualThan( String val);
+    Constraints<T> inRange( String lowerVal, String higherVal);
+    Constraints<T> validValues( String... values);
+    Constraints<T> length( int len);
+    Constraints<T> minLength( int len);
+    Constraints<T> maxLength( int len);
+    Constraints<T> pattern( String pattern);
     T end();
 }
 
@@ -114,6 +129,10 @@ class Sample {
                             .field("metedata-key2", "metadata-value2")
                             .field("metedata-key3", "metadata-value3").end()
                     .dataType("DTName2")
+                        .derivedFrom("string")
+                        .constraints()
+                            .maxLength( 10)
+                            .validValues("a", "b").end()
                     .dataType("DTName3")
                 .nodeTypes()
                     .nodeType("NTName1")
