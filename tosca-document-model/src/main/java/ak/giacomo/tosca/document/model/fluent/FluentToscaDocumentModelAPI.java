@@ -59,20 +59,21 @@ interface GroupTypes extends DocumentItem
 interface DataType extends DataTypes {
     DataType derivedFrom (String baseType);
     DataType version (String baseType);
-    DataTypeMetadata metadata ();
+    Metadata<DataType> metadata ();
     DataType description (String description);
 //  DataTypeConstraints constraints ();
 //  DataTypePropertyDefinitions properties ();
 }
 
-interface DataTypeMetadata extends DataType {
-    DataTypeMetadata field (String name, String value);
+interface Metadata<T>  {
+    Metadata<T> field(String name, String value);
+    T end();
 }
 
 interface NodeType extends NodeTypes {
     NodeType derivedFrom (String baseType);
     NodeType version (String baseType);
-    NodeTypeMetadata metadata ();
+    Metadata<NodeType> metadata ();
     NodeType description (String description);
 /*
     properties
@@ -84,14 +85,10 @@ interface NodeType extends NodeTypes {
      */
 }
 
-interface NodeTypeMetadata extends NodeType {
-    NodeTypeMetadata field (String name, String value);
-}
-
 interface GroupType extends GroupTypes {
     GroupType derivedFrom (String baseType);
     GroupType version (String version);
-    GroupTypeMetadata metadata ();
+    Metadata<GroupType> metadata ();
     GroupType description (String description);
 /*
     properties
@@ -101,10 +98,6 @@ interface GroupType extends GroupTypes {
     capabilities
     interfaces
      */
-}
-
-interface GroupTypeMetadata extends GroupType {
-    GroupTypeMetadata field (String name, String value);
 }
 
 class Sample {
@@ -119,11 +112,14 @@ class Sample {
                         .metadata()
                             .field("metedata-key1", "metadata-value1")
                             .field("metedata-key2", "metadata-value2")
-                            .field("metedata-key3", "metadata-value3")
+                            .field("metedata-key3", "metadata-value3").end()
                     .dataType("DTName2")
                     .dataType("DTName3")
                 .nodeTypes()
                     .nodeType("NTName1")
+                        .metadata()
+                            .field("metedata-key1", "metadata-value1")
+                            .field("metedata-key2", "metadata-value2").end()
                     .nodeType("NTName2")
                 .dataTypes()
                     .dataType("DTName1")
