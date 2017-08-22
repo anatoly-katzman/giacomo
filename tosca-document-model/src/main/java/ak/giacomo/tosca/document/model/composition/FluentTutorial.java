@@ -1,4 +1,4 @@
-package ak.giacomo.tosca.document.model.fluent;
+package ak.giacomo.tosca.document.model.composition;
 
 /**
  * Created by ak435s on 8/20/2017.
@@ -29,7 +29,7 @@ public class FluentTutorial
 {
     // Initial interface, entry point of the DSL
     // Depending on your DSL's nature, this can also be a class with static
-    // methods which can be static imported making your DSL even more fluent
+    // methods which can be static imported making your DSL even more composition
     public interface Start {
         End singleWord();
         End parameterizedWord( String parameter);
