@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 /**
  * Created by ak435s on 8/20/2017.
  */
-public class DocumentTest
+public class DocumentStepTest
 {
     @Test
     public void createEmptyDocument() {

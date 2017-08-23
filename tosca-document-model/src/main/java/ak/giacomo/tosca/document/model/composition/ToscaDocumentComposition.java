@@ -7,11 +7,11 @@ package ak.giacomo.tosca.document.model.composition;
 
 https://dzone.com/articles/java-fluent-api-designer-crash
 
-Document ::= ToscaDefinitionVersion? DocumentItem*
-DocumentItem ::= DataTypes | NodeTypes | GroupTypes
-DataTypes ::= DataType+
-NodeTypes ::= NodeType+
-GroupTypes ::= GroupType+
+DocumentStep ::= ToscaDefinitionVersion? DocumentItemStep*
+DocumentItemStep ::= DataTypesStep | NodeTypesStep | GroupTypesStep
+DataTypesStep ::= DataTypeStep+
+NodeTypesStep ::= NodeTypeStep+
+GroupTypesStep ::= GroupTypeStep+
 
 Java impplementation of these rules:
 - Every DSL “keyword” becomes a Java method
@@ -24,9 +24,9 @@ Java impplementation of these rules:
 
 public interface ToscaDocumentComposition
 {
-    Document document();
-    DataTypes dataTypes();
-    DataType dataType();
+    DocumentStep document();
+    DataTypesStep dataTypes();
+    DataTypeStep dataType();
 }
 
 

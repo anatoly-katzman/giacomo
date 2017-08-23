@@ -3,7 +3,8 @@ package ak.giacomo.tosca.document.model.composition;
 /**
  * Created by ak435s on 8/22/2017.
  */
-public interface DataTypes extends DocumentItem
+public interface EndStep<T>
 {
-    DataType dataType(String name);
+    T end();
 }
+

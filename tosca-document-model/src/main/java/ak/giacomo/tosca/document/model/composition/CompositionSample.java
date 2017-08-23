@@ -5,7 +5,7 @@ package ak.giacomo.tosca.document.model.composition;
  */
 class CompositionSample
 {
-    void doIt( Document document) {
+    void doIt( DocumentStep document) {
         document.end();
 
         document.toscaDefinitionVersion( "tosca_simple_yaml_1_0")
