@@ -10,9 +10,9 @@ import java.util.Optional;
 @AutoValue
 public abstract class Document
 {
-    abstract public Optional<String> toscaDefinitionVersion();
-    abstract public Optional<Metadata> metadata();
-    abstract public Optional<String> description();
+    public abstract Optional<String> toscaDefinitionVersion();
+    public abstract Optional<Metadata> metadata();
+    public abstract Optional<String> description();
 
 /*
     private RepositoryDefinitions repositorieDefinitions;
@@ -31,16 +31,16 @@ public abstract class Document
     private TopologyTemplate topologyTemplate;
 */
 
-    static public Builder builder() {
+    public static Builder builder() {
         return new AutoValue_Document.Builder();
     }
 
     @AutoValue.Builder
-    abstract public static class Builder {
-        abstract public Builder toscaDefinitionVersion( String toscaDefinitionVersion);
-        abstract public Builder metadata( Metadata metadata);
-        abstract public Builder description( String description);
+    public abstract static class Builder {
+        public abstract Builder toscaDefinitionVersion( String toscaDefinitionVersion);
+        public abstract Builder metadata( Metadata metadata);
+        public abstract Builder description( String description);
 
-        abstract public Document build();
+        public abstract Document build();
     }
 }
