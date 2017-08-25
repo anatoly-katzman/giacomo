@@ -1,5 +1,8 @@
 package ak.giacomo.tosca.document.model2;
 
+import ak.giacomo.tosca.document.model.ImmutableMetadata;
+import ak.giacomo.tosca.document.model.ImmutableMetadataField;
+import ak.giacomo.tosca.document.model.Metadata;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

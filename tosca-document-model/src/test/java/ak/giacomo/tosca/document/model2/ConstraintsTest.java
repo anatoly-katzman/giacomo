@@ -1,9 +1,11 @@
 package ak.giacomo.tosca.document.model2;
 
+import ak.giacomo.tosca.document.model.Constraints;
+import ak.giacomo.tosca.document.model.ImmutableConstraint;
+import ak.giacomo.tosca.document.model.ImmutableConstraints;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.Assert.*;
 

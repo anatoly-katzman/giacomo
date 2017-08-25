@@ -1,10 +1,16 @@
 package ak.giacomo.tosca.document.model;
 
+import org.immutables.value.Value;
+
 /**
- * Created by ak435s on 8/20/2017.
+ * Created by ak435s on 8/25/2017.
  */
-public class MetadataField
+@Value.Immutable
+public abstract class MetadataField
 {
-    private String name;
-    private String value;
+    @Value.Parameter
+    public abstract String name();
+
+    @Value.Parameter
+    public abstract String value();
 }

@@ -1,5 +1,7 @@
 package ak.giacomo.tosca.document.model2;
 
+import ak.giacomo.tosca.document.model.ImmutablePropertyDefinition;
+import ak.giacomo.tosca.document.model.PropertyDefinition;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

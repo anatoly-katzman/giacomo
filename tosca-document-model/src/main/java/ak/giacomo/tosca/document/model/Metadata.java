@@ -1,19 +1,14 @@
 package ak.giacomo.tosca.document.model;
 
-import com.google.auto.value.AutoValue;
+import org.immutables.value.Value;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 
 /**
- * Created by ak435s on 8/20/2017.
+ * Created by ak435s on 8/25/2017.
  */
-@AutoValue
-public class Metadata
+@Value.Immutable
+public abstract class Metadata
 {
-    private Map<String, MetadataField> valuesByName = new LinkedHashMap();
-
-    public MetadataField getFieldByName( String fieldName) {
-        return valuesByName.get( fieldName);
-    }
+    public abstract List<MetadataField> fields();
 }
