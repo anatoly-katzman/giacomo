@@ -13,6 +13,50 @@
     <packaging>jar</packaging>
     <name>TOSCA Parser</name>
 
+    <build>
+        <!-- To define the plugin version in your parent POM -->
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.antlr</groupId>
+                    <artifactId>antlr4-maven-plugin</artifactId>
+                    <version>4.7</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <!-- To use the plugin goals in this POM or the parent POM -->
+            <plugin>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-maven-plugin</artifactId>
+                <version>4.7</version>
+                <executions>
+                    <!-- Note that you can create multiple executions, and thus build some grammars
+                    with different options to others (such as setting the debug option for instance).  -->
+                    <execution>
+                        <id>antlr</id>
+                        <configuration>
+                            <sourceDirectory>${project.basedir}/src/main/antlr4</sourceDirectory>
+                            <arguments>
+                                <argument>-package</argument>
+                                <argument>ak.giacomo.tosca.parser</argument>
+                                <argument>-o</argument>
+                                <argument>${project.build.directory}/generated-sources/antlr4/ak/giacomo/tosca/parser</argument>
+                                <argument>-listener</argument>
+                                <argument>-visitor</argument>
+                            </arguments>
+                        </configuration>
+                        <goals>
+                            <goal>antlr4</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>ak.giacomo</groupId>
@@ -23,6 +67,11 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>23.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4</artifactId>
+            <version>4.7</version>
         </dependency>
     </dependencies>
 
