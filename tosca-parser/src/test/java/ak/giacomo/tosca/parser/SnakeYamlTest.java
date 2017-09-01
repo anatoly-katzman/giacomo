@@ -19,13 +19,14 @@ public class SnakeYamlTest
     public void testParse() {
         Yaml yaml = new Yaml();
         Event e = null;
-        int counter = 0;
+        int numEvents = 0;
         Iterable<Event> events = yaml.parse(new StringReader("abc: 56 \nk2: 7\nk3: {a: 1, b: 2}\n[1, 2, 3]: 'abc'"));
         for (Event event : events) {
             System.out.println( event);
-            counter++;
+            numEvents++ ;
         }
-        System.out.println(counter + " events in total");
+        System.out.println("Counted " + numEvents + " events in total");
+        assertEquals( 23, numEvents);
     }
 
     @Test
