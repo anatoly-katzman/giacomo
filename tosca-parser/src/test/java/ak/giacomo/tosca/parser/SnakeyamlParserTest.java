@@ -13,7 +13,7 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-public class SnakeYamlTest
+public class SnakeyamlParserTest
 {
     @Test
     public void testParse() {
