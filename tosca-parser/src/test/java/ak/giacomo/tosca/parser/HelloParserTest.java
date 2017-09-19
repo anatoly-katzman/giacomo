@@ -12,8 +12,8 @@ public class HelloParserTest
     public void testHelloParser() {
 
         CharStream inputStream = CharStreams.fromString ( "a a a", "mySource");
-        HelloLexer markupLexer = new HelloLexer( inputStream);
-        TokenStream tokenStream = new CommonTokenStream( markupLexer);
+        HelloLexer lexer = new HelloLexer( inputStream);
+        TokenStream tokenStream = new CommonTokenStream( lexer);
         HelloParser parser = new HelloParser( tokenStream);
         HelloParser.RContext rContext = parser.r();
 

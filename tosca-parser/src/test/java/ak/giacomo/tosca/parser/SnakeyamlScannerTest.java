@@ -11,14 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.yaml.snakeyaml.tokens.Token.ID.StreamEnd;
-import static org.yaml.snakeyaml.tokens.Token.ID.StreamStart;
+import static org.yaml.snakeyaml.tokens.Token.ID.*;
 
 public class SnakeyamlScannerTest
 {
     @Test
     public void scanEmptyString() {
-        List<Token> tokens = listTokens( "");
+        List<Token> tokens = tokenize( "");
         assertEquals(2, tokens.size());
         assertEquals( StreamStart, tokens.get(0).getTokenId());
         assertEquals( StreamEnd, tokens.get(1).getTokenId());
@@ -27,7 +26,7 @@ public class SnakeyamlScannerTest
     @Test
     public void scanString()
     {
-        List<Token> tokens = listTokens( "\nabc: 56 \nk2: 7\nk3: {a: 1, b: 2}\n[1, 2, 3]: 'abc'");
+        List<Token> tokens = tokenize( "\nabc: 56 \nk2: 7\nk3: {a: 1, b: 2}\n[1, 2, 3]: 'abc'");
         assertEquals(36, tokens.size());
         assertEquals( Token.ID.StreamStart, tokens.get(0).getTokenId());
         assertEquals( Token.ID.BlockMappingStart, tokens.get(1).getTokenId());
@@ -51,7 +50,18 @@ public class SnakeyamlScannerTest
         assertEquals( Token.ID.StreamEnd, tokens.get(35).getTokenId());
     }
 
-    private List<Token> listTokens( String text)
+    @Test
+    public void scanInvalidYamlString() {
+        // Should tokenize even strings that look invalid as YAML
+        List<Token> tokens = tokenize( "}{");
+        assertEquals(4, tokens.size());
+        assertEquals( StreamStart, tokens.get(0).getTokenId());
+        assertEquals( FlowMappingEnd, tokens.get(1).getTokenId());
+        assertEquals( FlowMappingStart, tokens.get(2).getTokenId());
+        assertEquals( StreamEnd, tokens.get(3).getTokenId());
+    }
+
+    private List<Token> tokenize(String text)
     {
         List<Token> tokens = new ArrayList<>();
         StreamReader reader = new StreamReader( text);
@@ -68,13 +78,5 @@ public class SnakeyamlScannerTest
         System.out.println( prettyTokens);
 */
         return tokens;
-    }
-
-    @Test
-    public void scanInvalidString() {
-        List<Token> tokens = listTokens( "{");
-        assertEquals(2, tokens.size());
-        assertEquals( StreamStart, tokens.get(0).getTokenId());
-        assertEquals( StreamEnd, tokens.get(1).getTokenId());
     }
 }
