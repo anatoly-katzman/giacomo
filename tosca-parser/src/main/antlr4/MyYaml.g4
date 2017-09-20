@@ -1,14 +1,16 @@
 lexer grammar MyYaml;
 
-//--- Dummy piece, just copied from a sample
 /*
-ID : [a-zA-Z]+ ; // match identifiers
-INT : [0-9]+ ; // match integers
-NEWLINE:'\r'? '\n' ; // return newlines to parser (is end-statement signal)
-WS : [ \t]+ -> skip ; // toss out whitespace
-*/
-//--- Dummy piece, just copied from a sample
 
+http://yaml.org/spec/1.2/spec.html
+
+*/
+
+
+/*****************************************************************************
+    Chapter 5. Characters
+    5.1. Character Set
+*****************************************************************************/
 
 //[1]	c-printable	::=	  #x9 | #xA | #xD | [#x20-#x7E]        /* 8 bit */
 //                    | #x85 | [#xA0-#xD7FF] | [#xE000-#xFFFD] /* 16 bit */
@@ -20,8 +22,18 @@ C_PRINTABLE: '\u0009' | '\u000A' | '\u000D' | [\u0020-\u007e]
 // [2]	nb-json	::=	#x9 | [#x20-#x10FFFF]
 NB_JSON: '\u0009' | [\u0020-\u{10ffff}];
 
+
+/*****************************************************************************
+    5.2. Character Encodings
+*****************************************************************************/
+
 // [3]	c-byte-order-mark	::=	#xFEFF
 C_BYTE_ORDER_MARK: '\ufeff';
+
+
+/*****************************************************************************
+    5.3. Indicator Characters
+*****************************************************************************/
 
 //--- Block Structure Indicators
 // [4]	c-sequence-entry	::=	“-”
@@ -49,6 +61,7 @@ C_MAPPING_START: '[';
 // [11]	c-mapping-end	::=	“}”
 C_MAPPING_END: '[';
 
+//--- Comment Indicator
 // [12]	c-comment	::=	“#”
 C_COMMENT: '#';
 
@@ -94,7 +107,10 @@ C_INDICATOR: '-' | '?' | ':' | ',' | '[' | ']' | '{' | '}'
 // [23]	c-flow-indicator	::=	“,” | “[” | “]” | “{” | “}”
 C_FLOW_INDICATOR:   ',' | '[' | ']' | '{' | '}';
 
-//--- Line Break Characters
+/*****************************************************************************
+    5.4. Line Break Characters
+*****************************************************************************/
+
 // [24]	b-line-feed	::=	#xA    /* LF */
 fragment B_LINE_FEED: '\u000A';
 
@@ -112,7 +128,6 @@ NB_CHAR: '\u0009'
         | [\ue000-\uefefe] | [\uf000-\ufffd] // excluding C_BYTE_ORDER_MARK: '\ufeff';
         | [\u{10000}-\u{10ffff}];
 
-
 //  [28]	b-break	::=	  ( b-carriage-return b-line-feed ) /* DOS, Windows */
 //                      | b-carriage-return                 /* MacOS upto 9.x */
 //                      | b-line-feed                       /* UNIX, MacOS X */
@@ -120,15 +135,16 @@ B_BREAK: B_CARRIADGE_RETURN B_LINE_FEED
         | B_CARRIADGE_RETURN
         | B_LINE_FEED;
 
-
-
 // [29]	b-as-line-feed	::=	b-break
 B_AS_LINE_FEED:	B_BREAK;
 
 // [30]	b-non-content	::=	b-break
 B_NON_CONTENT: B_BREAK;
 
-//--- White Space Characters
+/*****************************************************************************
+    5.5. White Space Characters
+*****************************************************************************/
+
 // [31]	s-space	::=	#x20 /* SP */
 S_SPACE: '\u0020';
 
@@ -141,7 +157,9 @@ S_WHITE: S_SPACE | S_TAB;
 // [34]	ns-char	::=	nb-char - s-white
 NS_CHAR: ~[\u0020\u0009];
 
-//--- Miscellaneous Characters
+/*****************************************************************************
+    5.6. Miscellaneous Characters
+*****************************************************************************/
 
 // [35]	ns-dec-digit	::=	[#x30-#x39] /* 0-9 */
 NS_DEC_DIGIT: [\u0030-\u0039];
@@ -171,7 +189,10 @@ NS_TAG_CHAR: '%' NS_HEX_DIGIT NS_HEX_DIGIT | NS_WORD_CHAR /*| '#'*/
                     | '_' | '.' | /*'!' |*/ '~' | '*' | '\'' | '(' | ')' | '[' | ']';
 
 
-//--- Escaped Characters
+/*****************************************************************************
+    5.7. Escaped Characters
+*****************************************************************************/
+
 // [42]	ns-esc-null	::=	“0”
 NS_ESC_NULL: '0';
 
@@ -254,7 +275,12 @@ C_NS_ESC_CHAR:	'\\'
                 | NS_ESC_8_BIT | NS_ESC_16_BIT | NS_ESC_32_BIT );
 
 
-//--- Indentation Spaces
+
+/*****************************************************************************
+    Chapter 6. Basic Structures
+    6.1. Indentation Spaces
+*****************************************************************************/
+
 // [63]	s-indent(n)	::=	s-space × n
 S_INDENT_01: S_SPACE;
 S_INDENT_02: S_INDENT_01 S_SPACE;
@@ -274,11 +300,16 @@ S_INDENT_LE_N_03: S_INDENT_LT_N_03 | S_INDENT_03;
 S_INDENT_LE_N_04: S_INDENT_LT_N_04 | S_INDENT_04;
 S_INDENT_LE_N_05: S_INDENT_LT_N_05 | S_INDENT_05;
 
-//--- Separation Spaces
-S_SEPARATE_IN_LINE:	S_WHITE+; // | <Start of line> TODO how to express <Start of line>?!
+/*****************************************************************************
+    6.2. Separation Spaces
+*****************************************************************************/
+// [66]	s-separate-in-line	::=	s-white+ | /* Start of line */
+S_SEPARATE_IN_LINE:	S_WHITE+; // | <Start of line>
+//TODO how to express <Start of line>?!
 
-
-//--- Line Prefixes
+/*****************************************************************************
+    6.3. Line Prefixes
+*****************************************************************************/
 /*
 Rule [67]	s-line-prefix(n,c)	::=	c = block-out ⇒ s-block-line-prefix(n)
                                     c = block-in  ⇒ s-block-line-prefix(n)
@@ -322,7 +353,10 @@ S_FLOW_LINE_PREFIX_03: S_INDENT_03 S_SEPARATE_IN_LINE?;
 S_FLOW_LINE_PREFIX_04: S_INDENT_04 S_SEPARATE_IN_LINE?;
 S_FLOW_LINE_PREFIX_05: S_INDENT_05 S_SEPARATE_IN_LINE?;
 
-//--- Empty Lines
+/*****************************************************************************
+    6.4. Empty Lines
+*****************************************************************************/
+
 // [70]	l-empty(n,c)	::=	( s-line-prefix(n,c) | s-indent(<n) ) b-as-line-feed
 L_EMPTY_01_BLOCK_IN: (S_BLOCK_LINE_PREFIX_01)? B_AS_LINE_FEED;
 L_EMPTY_02_BLOCK_IN: (S_BLOCK_LINE_PREFIX_02 | S_INDENT_LT_N_02) B_AS_LINE_FEED;
@@ -348,7 +382,10 @@ L_EMPTY_03_FLOW_OUT: (S_FLOW_LINE_PREFIX_03 | S_INDENT_LT_N_03) B_AS_LINE_FEED;
 L_EMPTY_04_FLOW_OUT: (S_FLOW_LINE_PREFIX_04 | S_INDENT_LT_N_04) B_AS_LINE_FEED;
 L_EMPTY_05_FLOW_OUT: (S_FLOW_LINE_PREFIX_05 | S_INDENT_LT_N_05) B_AS_LINE_FEED;
 
-//-- Line Folding
+
+/*****************************************************************************
+    6.5. Line Folding
+*****************************************************************************/
 
 // [71]	b-l-trimmed(n,c)	::=	b-non-content l-empty(n,c)+
 B_L_TRIMMED_01_BLOCK_IN: B_NON_CONTENT L_EMPTY_01_BLOCK_IN+;
@@ -410,7 +447,10 @@ S_FLOW_FOLDED_03: S_SEPARATE_IN_LINE? B_L_FOLDED_03_FLOW_IN S_FLOW_LINE_PREFIX_0
 S_FLOW_FOLDED_04: S_SEPARATE_IN_LINE? B_L_FOLDED_04_FLOW_IN S_FLOW_LINE_PREFIX_04;
 S_FLOW_FOLDED_05: S_SEPARATE_IN_LINE? B_L_FOLDED_05_FLOW_IN S_FLOW_LINE_PREFIX_05;
 
-//--- Comments
+/*****************************************************************************
+    6.6. Comments
+*****************************************************************************/
+
 // [75]	c-nb-comment-text	::=	“#” nb-char*
 C_NB_COMMENT_TEXT: '#' NB_CHAR*;
 
