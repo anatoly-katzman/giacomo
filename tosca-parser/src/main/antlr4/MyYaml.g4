@@ -465,3 +465,109 @@ L_COMMENT: S_SEPARATE_IN_LINE C_NB_COMMENT_TEXT? B_COMMENT;
 
 // [79]	s-l-comments	::=	( s-b-comment | /* Start of line */ ) l-comment*
 S_L_COMMENTS: (S_B_COMMENT /*| START_OF_LINE */) L_COMMENT*; // TODO find a way to express START_OF_LINE
+
+/*****************************************************************************
+    6.7. Separation Lines
+*****************************************************************************/
+
+// [80]	s-separate(n,c)	::=	c = block-out ⇒ s-separate-lines(n)
+//                          c = block-in  ⇒ s-separate-lines(n)
+//                          c = flow-out  ⇒ s-separate-lines(n)
+//                          c = flow-in   ⇒ s-separate-lines(n)
+//                          c = block-key ⇒ s-separate-in-line
+//                          c = flow-key  ⇒ s-separate-in-line
+S_SEPARATE_01_BLOCK_OUT: S_SEPARATE_LINES_01;
+S_SEPARATE_02_BLOCK_OUT: S_SEPARATE_LINES_02;
+S_SEPARATE_03_BLOCK_OUT: S_SEPARATE_LINES_03;
+S_SEPARATE_04_BLOCK_OUT: S_SEPARATE_LINES_04;
+S_SEPARATE_05_BLOCK_OUT: S_SEPARATE_LINES_05;
+
+S_SEPARATE_01_BLOCK_IN: S_SEPARATE_LINES_01;
+S_SEPARATE_02_BLOCK_IN: S_SEPARATE_LINES_02;
+S_SEPARATE_03_BLOCK_IN: S_SEPARATE_LINES_03;
+S_SEPARATE_04_BLOCK_IN: S_SEPARATE_LINES_04;
+S_SEPARATE_05_BLOCK_IN: S_SEPARATE_LINES_05;
+
+S_SEPARATE_01_FLOW_OUT: S_SEPARATE_LINES_01;
+S_SEPARATE_02_FLOW_OUT: S_SEPARATE_LINES_02;
+S_SEPARATE_03_FLOW_OUT: S_SEPARATE_LINES_03;
+S_SEPARATE_04_FLOW_OUT: S_SEPARATE_LINES_04;
+S_SEPARATE_05_FLOW_OUT: S_SEPARATE_LINES_05;
+
+S_SEPARATE_01_FLOW_IN: S_SEPARATE_LINES_01;
+S_SEPARATE_02_FLOW_IN: S_SEPARATE_LINES_02;
+S_SEPARATE_03_FLOW_IN: S_SEPARATE_LINES_03;
+S_SEPARATE_04_FLOW_IN: S_SEPARATE_LINES_04;
+S_SEPARATE_05_FLOW_IN: S_SEPARATE_LINES_05;
+
+S_SEPARATE_BLOCK_KEY: S_SEPARATE_IN_LINE;
+S_SEPARATE_FLOW_KEY: S_SEPARATE_IN_LINE;
+
+// [81]	s-separate-lines(n)	::=	( s-l-comments s-flow-line-prefix(n) )
+//                          | s-separate-in-line
+S_SEPARATE_LINES_01: (S_L_COMMENTS S_FLOW_LINE_PREFIX_01) | S_SEPARATE_IN_LINE;
+S_SEPARATE_LINES_02: (S_L_COMMENTS S_FLOW_LINE_PREFIX_02) | S_SEPARATE_IN_LINE;
+S_SEPARATE_LINES_03: (S_L_COMMENTS S_FLOW_LINE_PREFIX_03) | S_SEPARATE_IN_LINE;
+S_SEPARATE_LINES_04: (S_L_COMMENTS S_FLOW_LINE_PREFIX_04) | S_SEPARATE_IN_LINE;
+S_SEPARATE_LINES_05: (S_L_COMMENTS S_FLOW_LINE_PREFIX_05) | S_SEPARATE_IN_LINE;
+
+/*****************************************************************************
+    6.8. Directives
+*****************************************************************************/
+// [82]	l-directive	::=	“%”
+//  ( ns-yaml-directive
+//  | ns-tag-directive
+//  | ns-reserved-directive )
+//  s-l-comments
+L_DIRECTIVE: '%' (NS_YAML_DIRECTIVE | NS_TAG_DIRECTIVE | NS_RESERVED_DIRECTIVE) S_L_COMMENTS;
+
+//--- Reserved Directives
+// [83]	ns-reserved-directive ::= ns-directive-name
+//                            ( s-separate-in-line ns-directive-parameter )*
+NS_RESERVED_DIRECTIVE: NS_DIRECTIVE_NAME (S_SEPARATE_IN_LINE NS_DIRECTIVE_PARAMETER)*;
+
+// [84]	ns-directive-name ::= ns-char+
+NS_DIRECTIVE_NAME: NS_CHAR+;
+
+// [85]	ns-directive-parameter ::= ns-char+
+NS_DIRECTIVE_PARAMETER: NS_CHAR+;
+
+//--- “YAML” Directives
+// [86]	ns-yaml-directive ::= “Y” “A” “M” “L” s-separate-in-line ns-yaml-version
+NS_YAML_DIRECTIVE: 'Y' 'A' 'M' 'L' S_SEPARATE_IN_LINE NS_YAML_VERSION;
+
+// [87]	ns-yaml-version	::=	ns-dec-digit+ “.” ns-dec-digit+
+NS_YAML_VERSION: NS_DEC_DIGIT+ '.' NS_DEC_DIGIT+;
+
+//--- “TAG” directive
+// [88]	ns-tag-directive	::=	“T” “A” “G”
+//                          s-separate-in-line c-tag-handle
+//                          s-separate-in-line ns-tag-prefix
+NS_TAG_DIRECTIVE: 'T' 'A' 'G' S_SEPARATE_IN_LINE C_TAG_HANDLE S_SEPARATE_IN_LINE NS_TAG_PREFIX;
+
+//--- Tag Handles
+// [89]	c-tag-handle	::=	  c-named-tag-handle
+//                      | c-secondary-tag-handle
+//                      | c-primary-tag-handle
+C_TAG_HANDLE: C_NAMED_TAG_HANDLE | C_SECONDARY_TAG_HANDLE | C_PRIMARY_TAG_HANDLE;
+
+// [90]	c-primary-tag-handle	::=	“!”
+C_PRIMARY_TAG_HANDLE: '!';
+
+// [91]	c-secondary-tag-handle	::=	“!” “!”
+C_SECONDARY_TAG_HANDLE: '!' '!';
+
+// [92]	c-named-tag-handle	::=	“!” ns-word-char+ “!”
+C_NAMED_TAG_HANDLE: '!' NS_WORD_CHAR+ '!';
+
+//--- Tag Prefixes
+// [93]	ns-tag-prefix	::=	c-ns-local-tag-prefix | ns-global-tag-prefix
+NS_TAG_PREFIX: C_NS_LOCAL_TAG_PREFIX | NS_GLOBAL_TAG_PREFIX;
+
+// [94]	c-ns-local-tag-prefix	::=	“!” ns-uri-char*
+C_NS_LOCAL_TAG_PREFIX: '!' NS_URI_CHAR*;
+
+// [95]	ns-global-tag-prefix	::=	ns-tag-char ns-uri-char*
+NS_GLOBAL_TAG_PREFIX: NS_TAG_CHAR NS_URI_CHAR*;
+
+
