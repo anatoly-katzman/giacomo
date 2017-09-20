@@ -422,3 +422,6 @@ S_B_COMMENT: (S_SEPARATE_IN_LINE C_NB_COMMENT_TEXT?)? B_COMMENT;
 
 // [78]	l-comment	::=	s-separate-in-line c-nb-comment-text? b-comment
 L_COMMENT: S_SEPARATE_IN_LINE C_NB_COMMENT_TEXT? B_COMMENT;
+
+// [79]	s-l-comments	::=	( s-b-comment | /* Start of line */ ) l-comment*
+S_L_COMMENTS: (S_B_COMMENT /*| START_OF_LINE */) L_COMMENT*; // TODO find a way to express START_OF_LINE
