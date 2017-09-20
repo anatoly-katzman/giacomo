@@ -570,4 +570,229 @@ C_NS_LOCAL_TAG_PREFIX: '!' NS_URI_CHAR*;
 // [95]	ns-global-tag-prefix	::=	ns-tag-char ns-uri-char*
 NS_GLOBAL_TAG_PREFIX: NS_TAG_CHAR NS_URI_CHAR*;
 
+//--- Node Tags
+// [97]	c-ns-tag-property	::=	  c-verbatim-tag
+//                          | c-ns-shorthand-tag
+//                          | c-non-specific-tag
+C_NS_TAG_PROPERTY: C_VERBATIM_TAG | C_NS_SHORTHAND_TAG | C_NON_SPECIFIC_TAG;
+
+// [98]	c-verbatim-tag	::=	“!” “<” ns-uri-char+ “>”
+C_VERBATIM_TAG: '!' '<' NS_URI_CHAR+ '>';
+
+// [99]	c-ns-shorthand-tag	::=	c-tag-handle ns-tag-char+
+C_NS_SHORTHAND_TAG: C_TAG_HANDLE NS_TAG_CHAR+;
+
+// [100]	c-non-specific-tag	::=	“!”
+C_NON_SPECIFIC_TAG: '!';
+
+//--- Node Anchors
+// [101]	c-ns-anchor-property	::=	“&” ns-anchor-name
+C_NS_ANCHOR_PROPERTY: '&' NS_ANCHOR_NAME;
+
+// [102]	ns-anchor-char	::=	ns-char - c-flow-indicator
+NS_ANCHOR_CHAR: ~([\u0020\u0009] | ',' | '[' | ']' | '{' | '}');
+
+// [103]	ns-anchor-name	::=	ns-anchor-char+
+NS_ANCHOR_NAME: NS_ANCHOR_CHAR+;
+
+/*****************************************************************************
+    Chapter 7. Flow Styles
+    7.1. Alias Nodes
+*****************************************************************************/
+
+// [104]	c-ns-alias-node	::=	“*” ns-anchor-name
+C_NS_ALIAS_NODE: '*' NS_ANCHOR_NAME;
+
+//--- Empty Nodes
+// [105]	e-scalar	::=	/* Empty */
+fragment E_SCALAR:;
+
+// [106]	e-node	::=	e-scalar
+fragment E_NODE: E_SCALAR;  // Completely Empty Flow Nodes
+
+
+/*****************************************************************************
+    7.3. Flow Scalar Styles
+*****************************************************************************/
+
+//--- Double-Quoted Style
+// [107]	nb-double-char	::=	c-ns-esc-char | ( nb-json - “\” - “"” )
+NB_DOUBLE_CHAR: C_NS_ESC_CHAR
+                | '\u0020'..'\u0021'
+                // exclude \u0022 /* double quote */
+                | '\u0023'..'\u005b'
+                // exclude \u005c /* backslash */
+                | '\u005d'..'\u{10ffff}';
+
+// [108]	ns-double-char	::=	nb-double-char - s-white
+// NS_DOUBLE_CHAR: NB_DOUBLE_CHAR - S_WHITE;
+NS_DOUBLE_CHAR: C_NS_ESC_CHAR
+                //  exclude space x20
+                | '\u0021'
+                // exclude \u0022 /* double quote */
+                | '\u0023'..'\u005b'
+                // exclude \u005c /* backslash */
+                | '\u005d'..'\u{10ffff}';
+
+// [109]	c-double-quoted(n,c)	::=	“"” nb-double-text(n,c) “"”
+
+
+// [110]	nb-double-text(n,c)	::=	c = flow-out  ⇒ nb-double-multi-line(n)
+//                              c = flow-in   ⇒ nb-double-multi-line(n)
+//                              c = block-key ⇒ nb-double-one-line
+//                              c = flow-key  ⇒ nb-double-one-line
+fragment NB_DOUBLE_TEXT_01_FLOW_OUT: NB_DOUBLE_MULTI_LINE_01;
+fragment NB_DOUBLE_TEXT_02_FLOW_OUT: NB_DOUBLE_MULTI_LINE_02;
+fragment NB_DOUBLE_TEXT_03_FLOW_OUT: NB_DOUBLE_MULTI_LINE_03;
+fragment NB_DOUBLE_TEXT_04_FLOW_OUT: NB_DOUBLE_MULTI_LINE_04;
+fragment NB_DOUBLE_TEXT_05_FLOW_OUT: NB_DOUBLE_MULTI_LINE_05;
+
+fragment NB_DOUBLE_TEXT_01_FLOW_IN: NB_DOUBLE_MULTI_LINE_01;
+fragment NB_DOUBLE_TEXT_02_FLOW_IN: NB_DOUBLE_MULTI_LINE_02;
+fragment NB_DOUBLE_TEXT_03_FLOW_IN: NB_DOUBLE_MULTI_LINE_03;
+fragment NB_DOUBLE_TEXT_04_FLOW_IN: NB_DOUBLE_MULTI_LINE_04;
+fragment NB_DOUBLE_TEXT_05_FLOW_IN: NB_DOUBLE_MULTI_LINE_05;
+
+fragment NB_DOUBLE_TEXT_01_BLOCK_KEY: NB_DOUBLE_ONE_LINE;
+fragment NB_DOUBLE_TEXT_02_BLOCK_KEY: NB_DOUBLE_ONE_LINE;
+fragment NB_DOUBLE_TEXT_03_BLOCK_KEY: NB_DOUBLE_ONE_LINE;
+fragment NB_DOUBLE_TEXT_04_BLOCK_KEY: NB_DOUBLE_ONE_LINE;
+fragment NB_DOUBLE_TEXT_05_BLOCK_KEY: NB_DOUBLE_ONE_LINE;
+
+fragment NB_DOUBLE_TEXT_01_FLOW_KEY: NB_DOUBLE_ONE_LINE;
+fragment NB_DOUBLE_TEXT_02_FLOW_KEY: NB_DOUBLE_ONE_LINE;
+fragment NB_DOUBLE_TEXT_03_FLOW_KEY: NB_DOUBLE_ONE_LINE;
+fragment NB_DOUBLE_TEXT_04_FLOW_KEY: NB_DOUBLE_ONE_LINE;
+fragment NB_DOUBLE_TEXT_05_FLOW_KEY: NB_DOUBLE_ONE_LINE;
+
+// [111]	nb-double-one-line	::=	nb-double-char*
+fragment NB_DOUBLE_ONE_LINE: NB_DOUBLE_CHAR*;
+
+// [112]	s-double-escaped(n)	::=	s-white* “\” b-non-content
+//                              l-empty(n,flow-in)* s-flow-line-prefix(n)
+S_DOUBLE_ESCAPED_01: S_WHITE* '\\' B_NON_CONTENT L_EMPTY_01_FLOW_IN* S_FLOW_LINE_PREFIX_01;
+S_DOUBLE_ESCAPED_02: S_WHITE* '\\' B_NON_CONTENT L_EMPTY_02_FLOW_IN* S_FLOW_LINE_PREFIX_02;
+S_DOUBLE_ESCAPED_03: S_WHITE* '\\' B_NON_CONTENT L_EMPTY_03_FLOW_IN* S_FLOW_LINE_PREFIX_03;
+S_DOUBLE_ESCAPED_04: S_WHITE* '\\' B_NON_CONTENT L_EMPTY_04_FLOW_IN* S_FLOW_LINE_PREFIX_04;
+S_DOUBLE_ESCAPED_05: S_WHITE* '\\' B_NON_CONTENT L_EMPTY_05_FLOW_IN* S_FLOW_LINE_PREFIX_05;
+
+// [113]	s-double-break(n)	::=	s-double-escaped(n) | s-flow-folded(n)
+S_DOUBLE_BREAK_01: S_DOUBLE_ESCAPED_01 | S_FLOW_FOLDED_01;
+S_DOUBLE_BREAK_02: S_DOUBLE_ESCAPED_02 | S_FLOW_FOLDED_02;
+S_DOUBLE_BREAK_03: S_DOUBLE_ESCAPED_03 | S_FLOW_FOLDED_03;
+S_DOUBLE_BREAK_04: S_DOUBLE_ESCAPED_04 | S_FLOW_FOLDED_04;
+S_DOUBLE_BREAK_05: S_DOUBLE_ESCAPED_05 | S_FLOW_FOLDED_05;
+
+// [114]	nb-ns-double-in-line	::=	( s-white* ns-double-char )*
+fragment NB_NS_DOUBLE_IN_LINE: (S_WHITE NS_DOUBLE_CHAR)*;
+
+// [115]	s-double-next-line(n)	::=	s-double-break(n)
+//                                  ( ns-double-char nb-ns-double-in-line
+//                                  ( s-double-next-line(n) | s-white* ) )?
+S_DOUBLE_NEXT_LINE_01: S_DOUBLE_BREAK_01
+                       (NS_DOUBLE_CHAR NB_NS_DOUBLE_IN_LINE
+                          (S_DOUBLE_NEXT_LINE_01 | S_WHITE*))?;
+S_DOUBLE_NEXT_LINE_02: S_DOUBLE_BREAK_02
+                       (NS_DOUBLE_CHAR NB_NS_DOUBLE_IN_LINE
+                          (S_DOUBLE_NEXT_LINE_02 | S_WHITE*))?;
+S_DOUBLE_NEXT_LINE_03: S_DOUBLE_BREAK_03
+                       (NS_DOUBLE_CHAR NB_NS_DOUBLE_IN_LINE
+                          (S_DOUBLE_NEXT_LINE_03 | S_WHITE*))?;
+S_DOUBLE_NEXT_LINE_04: S_DOUBLE_BREAK_04
+                       (NS_DOUBLE_CHAR NB_NS_DOUBLE_IN_LINE
+                          (S_DOUBLE_NEXT_LINE_04 | S_WHITE*))?;
+S_DOUBLE_NEXT_LINE_05: S_DOUBLE_BREAK_05
+                       (NS_DOUBLE_CHAR NB_NS_DOUBLE_IN_LINE
+                          (S_DOUBLE_NEXT_LINE_05 | S_WHITE*))?;
+
+// [116]	nb-double-multi-line(n)	::=	nb-ns-double-in-line
+//                                  (s-double-next-line(n) | s-white* )
+fragment NB_DOUBLE_MULTI_LINE_01: NB_NS_DOUBLE_IN_LINE (S_DOUBLE_NEXT_LINE_01 | S_WHITE*);
+fragment NB_DOUBLE_MULTI_LINE_02: NB_NS_DOUBLE_IN_LINE (S_DOUBLE_NEXT_LINE_02 | S_WHITE*);
+fragment NB_DOUBLE_MULTI_LINE_03: NB_NS_DOUBLE_IN_LINE (S_DOUBLE_NEXT_LINE_03 | S_WHITE*);
+fragment NB_DOUBLE_MULTI_LINE_04: NB_NS_DOUBLE_IN_LINE (S_DOUBLE_NEXT_LINE_04 | S_WHITE*);
+fragment NB_DOUBLE_MULTI_LINE_05: NB_NS_DOUBLE_IN_LINE (S_DOUBLE_NEXT_LINE_05 | S_WHITE*);
+
+//--- Single-Quoted Style
+// [117]	c-quoted-quote	::=	“'” “'”
+C_QUOTED_QUOTE: '\'' '\'';
+
+// [118]	nb-single-char	::=	c-quoted-quote | ( nb-json - “'” )
+NB_SINGLE_CHAR: C_QUOTED_QUOTE
+                | '\u0009'
+                | '\u0020'..'\u0026'
+                // exclude x27 single quote
+                | '\u0028'..'\u{10ffff}';
+
+// [119]	ns-single-char	::=	nb-single-char - s-white
+NS_SINGLE_CHAR: C_QUOTED_QUOTE
+                // | '\u0009' - exclude tab
+                | '\u0021'..'\u0026'  // exclude x20 space
+                // exclude x27 single quote
+                | '\u0028'..'\u{10ffff}';
+                
+// [120]	c-single-quoted(n,c)	::=	“'” nb-single-text(n,c) “'”
+
+// [121]	nb-single-text(n,c)	::=	c = flow-out  ⇒ nb-single-multi-line(n)
+//                              c = flow-in   ⇒ nb-single-multi-line(n)
+//                              c = block-key ⇒ nb-single-one-line
+//                              c = flow-key  ⇒ nb-single-one-line
+fragment NB_SINGLE_TEXT01_FLOW_OUT: NB_SINGLE_MULTI_LINE_01;
+fragment NB_SINGLE_TEXT02_FLOW_OUT: NB_SINGLE_MULTI_LINE_02;
+fragment NB_SINGLE_TEXT03_FLOW_OUT: NB_SINGLE_MULTI_LINE_03;
+fragment NB_SINGLE_TEXT04_FLOW_OUT: NB_SINGLE_MULTI_LINE_04;
+fragment NB_SINGLE_TEXT05_FLOW_OUT: NB_SINGLE_MULTI_LINE_05;
+
+fragment NB_SINGLE_TEXT01_FLOW_IN: NB_SINGLE_MULTI_LINE_01;
+fragment NB_SINGLE_TEXT02_FLOW_IN: NB_SINGLE_MULTI_LINE_02;
+fragment NB_SINGLE_TEXT03_FLOW_IN: NB_SINGLE_MULTI_LINE_03;
+fragment NB_SINGLE_TEXT04_FLOW_IN: NB_SINGLE_MULTI_LINE_04;
+fragment NB_SINGLE_TEXT05_FLOW_IN: NB_SINGLE_MULTI_LINE_05;
+
+fragment NB_SINGLE_TEXT01_BLOCK_KEY: NB_SINGLE_ONE_LINE;
+fragment NB_SINGLE_TEXT02_BLOCK_KEY: NB_SINGLE_ONE_LINE;
+fragment NB_SINGLE_TEXT03_BLOCK_KEY: NB_SINGLE_ONE_LINE;
+fragment NB_SINGLE_TEXT04_BLOCK_KEY: NB_SINGLE_ONE_LINE;
+fragment NB_SINGLE_TEXT05_BLOCK_KEY: NB_SINGLE_ONE_LINE;
+
+fragment NB_SINGLE_TEXT_01_FLOW_KEY: NB_SINGLE_ONE_LINE;
+fragment NB_SINGLE_TEXT_02_FLOW_KEY: NB_SINGLE_ONE_LINE;
+fragment NB_SINGLE_TEXT_03_FLOW_KEY: NB_SINGLE_ONE_LINE;
+fragment NB_SINGLE_TEXT_04_FLOW_KEY: NB_SINGLE_ONE_LINE;
+fragment NB_SINGLE_TEXT_05_FLOW_KEY: NB_SINGLE_ONE_LINE;
+
+// [122]	nb-single-one-line	::=	nb-single-char*
+fragment NB_SINGLE_ONE_LINE: NB_SINGLE_CHAR*;
+
+// [123]	nb-ns-single-in-line	::=	( s-white* ns-single-char )*
+fragment NB_NS_SINGLE_IN_LINE: (S_WHITE* NS_SINGLE_CHAR)*;
+
+// [124]	s-single-next-line(n)	::=	s-flow-folded(n)
+//                                  ( ns-single-char nb-ns-single-in-line
+//                                    ( s-single-next-line(n) | s-white* ) )?
+S_SINGLE_NEXT_LINE_01: S_FLOW_FOLDED_01
+                       ( NS_SINGLE_CHAR NB_NS_DOUBLE_IN_LINE
+                         ( S_SINGLE_NEXT_LINE_01 | S_WHITE*))?;
+S_SINGLE_NEXT_LINE_02: S_FLOW_FOLDED_02
+                       ( NS_SINGLE_CHAR NB_NS_DOUBLE_IN_LINE
+                         ( S_SINGLE_NEXT_LINE_02 | S_WHITE*))?;
+S_SINGLE_NEXT_LINE_03: S_FLOW_FOLDED_03
+                       ( NS_SINGLE_CHAR NB_NS_DOUBLE_IN_LINE
+                         ( S_SINGLE_NEXT_LINE_03 | S_WHITE*))?;
+S_SINGLE_NEXT_LINE_04: S_FLOW_FOLDED_04
+                       ( NS_SINGLE_CHAR NB_NS_DOUBLE_IN_LINE
+                         ( S_SINGLE_NEXT_LINE_04 | S_WHITE*))?;
+S_SINGLE_NEXT_LINE_05: S_FLOW_FOLDED_05
+                       ( NS_SINGLE_CHAR NB_NS_DOUBLE_IN_LINE
+                         ( S_SINGLE_NEXT_LINE_05 | S_WHITE*))?;
+
+// [125]	nb-single-multi-line(n)	::=	nb-ns-single-in-line
+//                                  ( s-single-next-line(n) | s-white* )
+fragment NB_SINGLE_MULTI_LINE_01: NB_NS_SINGLE_IN_LINE (S_SINGLE_NEXT_LINE_01 | S_WHITE)*;
+fragment NB_SINGLE_MULTI_LINE_02: NB_NS_SINGLE_IN_LINE (S_SINGLE_NEXT_LINE_02 | S_WHITE)*;
+fragment NB_SINGLE_MULTI_LINE_03: NB_NS_SINGLE_IN_LINE (S_SINGLE_NEXT_LINE_03 | S_WHITE)*;
+fragment NB_SINGLE_MULTI_LINE_04: NB_NS_SINGLE_IN_LINE (S_SINGLE_NEXT_LINE_04 | S_WHITE)*;
+fragment NB_SINGLE_MULTI_LINE_05: NB_NS_SINGLE_IN_LINE (S_SINGLE_NEXT_LINE_05 | S_WHITE)*;
+
+//--- Plain Style
 
