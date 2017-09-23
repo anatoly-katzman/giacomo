@@ -289,12 +289,14 @@ S_INDENT_N04: S_INDENT_N03 S_SPACE;
 S_INDENT_N05: S_INDENT_N04 S_SPACE;
 
 // [64]	s-indent(<n)	::=	s-space × m /* Where m < n */
+fragment S_INDENT_LT_N01: /* empty */;
 S_INDENT_LT_N02: S_INDENT_N01;
 S_INDENT_LT_N03: S_INDENT_N01 | S_INDENT_N02;
 S_INDENT_LT_N04: S_INDENT_N01 | S_INDENT_N02 | S_INDENT_N03;
 S_INDENT_LT_N05: S_INDENT_N01 | S_INDENT_N02 | S_INDENT_N03 | S_INDENT_N04;
 
 // [65]	s-indent(≤n)	::=	s-space × m /* Where m ≤ n */
+fragment S_INDENT_LE_N01: S_INDENT_LT_N01 | S_INDENT_N01;
 S_INDENT_LE_N02: S_INDENT_LT_N02 | S_INDENT_N02;
 S_INDENT_LE_N03: S_INDENT_LT_N03 | S_INDENT_N03;
 S_INDENT_LE_N04: S_INDENT_LT_N04 | S_INDENT_N04;
@@ -2137,14 +2139,80 @@ NS_FLOW_NODE_N05_CFLOWKEY: C_NS_ALIAS_NODE | NS_FLOW_CONTENT_N05_CFLOWKEY
                             (S_SEPARATE_CFLOWKEY NS_FLOW_CONTENT_N05_CFLOWKEY)
                             | E_SCALAR));
 
+/*****************************************************************************
+    Chapter 8. Block Styles
+    8.1. Block Scalar Styles
+*****************************************************************************/
+/*
+(Block) Chomping: t
+Block scalars offer three possible mechanisms for chomping any trailing line breaks: strip, clip and keep.
+*/
 
+//--- 8.1.1. Block Scalar Headers
+// [162]	c-b-block-header(m,t)	::=	( ( c-indentation-indicator(m)
+//                                          c-chomping-indicator(t) )
+//                                  | ( c-chomping-indicator(t)
+//                                      c-indentation-indicator(m) ) )
+//                                  s-b-comment
+C_B_BLOCK_HEADER_M01_TSTRIP: (
+                        ( C_INDENTATION_INDICATOR_M1 C_CHOMPING_INDICATOR_TSTRIP)
+                        | (C_CHOMPING_INDICATOR_TSTRIP C_INDENTATION_INDICATOR_M1))
+                        S_B_COMMENT;
+//TODO expand T and M
 
+// [163]	c-indentation-indicator(m)	::=	ns-dec-digit ⇒ m = ns-dec-digit - #x30
+//                                          /* Empty */  ⇒ m = auto-detect()
 
+fragment C_INDENTATION_INDICATOR_M1: /*empty*/; // TODO this is a temporarily placeholder, understand this rule and express it
 
+// [164]	c-chomping-indicator(t)	::=	“-”         ⇒ t = strip
+//                                      “+”         ⇒ t = keep
+//                                      /* Empty */ ⇒ t = clip
+fragment C_CHOMPING_INDICATOR_TSTRIP: '-';
+fragment C_CHOMPING_INDICATOR_TKEEP: '+';
+fragment C_CHOMPING_INDICATOR_TCLIP: /* Empty */;
 
+//  [166]	l-chomped-empty(n,t)	::=	t = strip ⇒ l-strip-empty(n)
+//                                      t = clip  ⇒ l-strip-empty(n)
+//                                      t = keep  ⇒ l-keep-empty(n)
+fragment L_CHOMPED_EMPTY_N01_TSTRIP: L_STRIP_EMPTY_N01;
+fragment L_CHOMPED_EMPTY_N02_TSTRIP: L_STRIP_EMPTY_N02;
+fragment L_CHOMPED_EMPTY_N03_TSTRIP: L_STRIP_EMPTY_N03;
+fragment L_CHOMPED_EMPTY_N04_TSTRIP: L_STRIP_EMPTY_N04;
+fragment L_CHOMPED_EMPTY_N05_TSTRIP: L_STRIP_EMPTY_N05;
 
+fragment L_CHOMPED_EMPTY_N01_TCLIP: L_STRIP_EMPTY_N01;
+fragment L_CHOMPED_EMPTY_N02_TCLIP: L_STRIP_EMPTY_N02;
+fragment L_CHOMPED_EMPTY_N03_TCLIP: L_STRIP_EMPTY_N03;
+fragment L_CHOMPED_EMPTY_N04_TCLIP: L_STRIP_EMPTY_N04;
+fragment L_CHOMPED_EMPTY_N05_TCLIP: L_STRIP_EMPTY_N05;
 
+fragment L_CHOMPED_EMPTY_N01_TKEEP: L_KEEP_EMPTY_N01;
+fragment L_CHOMPED_EMPTY_N02_TKEEP: L_KEEP_EMPTY_N02;
+fragment L_CHOMPED_EMPTY_N03_TKEEP: L_KEEP_EMPTY_N03;
+fragment L_CHOMPED_EMPTY_N04_TKEEP: L_KEEP_EMPTY_N04;
+fragment L_CHOMPED_EMPTY_N05_TKEEP: L_KEEP_EMPTY_N05;
 
+//  [167]	l-strip-empty(n)	::=	( s-indent(≤n) b-non-content )* l-trail-comments(n)?
+fragment L_STRIP_EMPTY_N01: (S_INDENT_LE_N01 B_NON_CONTENT)* L_TRAIL_COMMENTS_N01?;
+fragment L_STRIP_EMPTY_N02: (S_INDENT_LE_N02 B_NON_CONTENT)* L_TRAIL_COMMENTS_N02?;
+fragment L_STRIP_EMPTY_N03: (S_INDENT_LE_N03 B_NON_CONTENT)* L_TRAIL_COMMENTS_N03?;
+fragment L_STRIP_EMPTY_N04: (S_INDENT_LE_N04 B_NON_CONTENT)* L_TRAIL_COMMENTS_N04?;
+fragment L_STRIP_EMPTY_N05: (S_INDENT_LE_N05 B_NON_CONTENT)* L_TRAIL_COMMENTS_N05?;
+
+//  [168]	l-keep-empty(n)	::=	l-empty(n,block-in)* l-trail-comments(n)?
+fragment L_KEEP_EMPTY_N01: L_EMPTY_N01_CBLOCKIN* L_TRAIL_COMMENTS_N01?;
+fragment L_KEEP_EMPTY_N02: L_EMPTY_N01_CBLOCKIN* L_TRAIL_COMMENTS_N02?;
+fragment L_KEEP_EMPTY_N03: L_EMPTY_N01_CBLOCKIN* L_TRAIL_COMMENTS_N03?;
+fragment L_KEEP_EMPTY_N04: L_EMPTY_N01_CBLOCKIN* L_TRAIL_COMMENTS_N04?;
+fragment L_KEEP_EMPTY_N05: L_EMPTY_N01_CBLOCKIN* L_TRAIL_COMMENTS_N05?;
+
+// [169]	l-trail-comments(n)	::=	s-indent(<n) c-nb-comment-text b-comment l-comment*
+L_TRAIL_COMMENTS_N01: S_INDENT_LE_N01 C_NB_COMMENT_TEXT B_COMMENT L_COMMENT*;
+L_TRAIL_COMMENTS_N02: S_INDENT_LE_N02 C_NB_COMMENT_TEXT B_COMMENT L_COMMENT*;
+L_TRAIL_COMMENTS_N03: S_INDENT_LE_N03 C_NB_COMMENT_TEXT B_COMMENT L_COMMENT*;
+L_TRAIL_COMMENTS_N04: S_INDENT_LE_N04 C_NB_COMMENT_TEXT B_COMMENT L_COMMENT*;
+L_TRAIL_COMMENTS_N05: S_INDENT_LE_N05 C_NB_COMMENT_TEXT B_COMMENT L_COMMENT*;
 
 
 
