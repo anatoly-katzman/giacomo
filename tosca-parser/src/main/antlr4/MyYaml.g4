@@ -3217,3 +3217,56 @@ fragment S_L_BLOCK_COLLECTION_N05_CBLOCKIN: ; // TODO implement this rule
 // [201] seq-spaces(n,c)::= c = block-out ⇒ n-1
 //                          c = block-in  ⇒ n
 
+
+
+/*****************************************************************************
+    Chapter 9. YAML Character Stream
+    9.1. Documents
+*****************************************************************************/
+
+// [202]	l-document-prefix	::=	c-byte-order-mark? l-comment*
+L_DOCUMENT_PREFIX: C_BYTE_ORDER_MARK? L_COMMENT*;
+
+//--- 9.1.2. Document Markers
+
+// [203]	c-directives-end	::=	“-” “-” “-”
+C_DIRECTIVES_END: '-' '-' '-';
+
+// [204]	c-document-end	::=	“.” “.” “.”
+C_DOCUMENT_END: '.' '.' '.';
+
+// [205]	l-document-suffix	::=	c-document-end s-l-comments
+L_DOCUMENT_SUFFIX: C_DOCUMENT_END S_L_COMMENTS;
+
+// [206]	c-forbidden	::=	/* Start of line */
+//                  ( c-directives-end | c-document-end )
+//                  ( b-char | s-white | /* End of file */ )
+C_FORBIDDEN: /* Start of the line */    //TODO find how to express a start of line
+                    (C_DIRECTIVES_END | C_DOCUMENT_END)
+                    (B_CHAR | S_WHITE | EOF);   //TODO how to express EOF???
+
+// [207]	l-bare-document	::=	s-l+block-node(-1,block-in)
+//                              /* Excluding c-forbidden content */
+L_BARE_DOCUMENT: S_L_BLOCK_NODE_N01_CBLOCKIN;      // TODO The indent here should be -1, find how to do this
+
+// [208]	l-explicit-document	::=	c-directives-end
+//                                  ( l-bare-document
+//                                  | ( e-node s-l-comments ) )
+L_EXPLICIT_DOCUMENT: C_DIRECTIVES_END
+                    (L_BARE_DOCUMENT | (E_NODE S_L_COMMENTS));
+
+// [209]	l-directive-document	::=	l-directive+ l-explicit-document
+L_DIRECTIVE_DOCUMENT: L_DIRECTIVE+ L_EXPLICIT_DOCUMENT;
+
+
+//--- 9.2. Streams
+
+// [210]	l-any-document	::=	  l-directive-document | l-explicit-document | l-bare-document
+L_ANY_DOCUMENT: L_DIRECTIVE_DOCUMENT | L_EXPLICIT_DOCUMENT | L_BARE_DOCUMENT;
+
+// [211]	l-yaml-stream	::=	l-document-prefix* l-any-document?
+//                              ( l-document-suffix+ l-document-prefix* l-any-document?
+//                              | l-document-prefix* l-explicit-document? )*
+L_YAML_DOCUMENT: L_DOCUMENT_PREFIX* L_ANY_DOCUMENT?
+                ( L_DOCUMENT_SUFFIX+ L_DOCUMENT_PREFIX* L_ANY_DOCUMENT?
+                | L_DOCUMENT_PREFIX* L_EXPLICIT_DOCUMENT?)*;
